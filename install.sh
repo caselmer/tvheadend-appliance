@@ -14,10 +14,11 @@ main() {
     check_root
     check_os
 
+    info "Starte Installation..."
     update_system
+    success "Grundinstallation abgeschlossen."
 
     echo
-    echo "Installation erfolgreich vorbereitet."
 }
 
 main "$@"

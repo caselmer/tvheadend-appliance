@@ -42,3 +42,36 @@ if [[ "$VERSION_ID" != "12" ]]; then
 fi
 
 }
+LOGFILE="/var/log/tvheadend-appliance.log"
+
+log() {
+    echo "[$(date '+%F %T')] $*" | tee -a "$LOGFILE"
+}
+
+info() {
+    log "[INFO] $*"
+}
+
+success() {
+    log "[ OK ] $*"
+}
+
+error() {
+    log "[FAIL] $*"
+}
+
+die() {
+    error "$*"
+    exit 1
+}
+on_error() {
+
+    local exit_code=$?
+
+    error "Installation abgebrochen (Exit-Code $exit_code)."
+
+    exit "$exit_code"
+}
+
+trap on_error ERR
+
