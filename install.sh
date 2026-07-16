@@ -1,29 +1,24 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-set -eu
+set -Eeuo pipefail
 
-VERSION="0.1.0"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-SCRIPT_DIR=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
+source "$SCRIPT_DIR/scripts/common.sh"
+source "$SCRIPT_DIR/scripts/apt.sh"
 
-. "$SCRIPT_DIR/scripts/common.sh"
-. "$SCRIPT_DIR/scripts/apt.sh"
+main() {
 
-echo
-echo "==============================================="
-echo " TVHeadend Appliance ${VERSION}"
-echo "==============================================="
-echo
+    print_header
 
-require_root
-success "Root-Rechte vorhanden"
+    check_root
+    check_os
 
-require_debian12
-success "Debian 12 erkannt"
+    update_system
 
-update_system
+    echo
+    echo "Installation erfolgreich vorbereitet."
+}
 
-install_base_packages
-
-success "Grundsystem vorbereitet"
+main "$@"
 

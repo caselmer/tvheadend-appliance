@@ -1,31 +1,15 @@
-#!/bin/sh
-
-set -eu
+#!/usr/bin/env bash
 
 update_system() {
 
-    info "Aktualisiere Paketlisten..."
+echo
+echo "==> Paketlisten aktualisieren"
 
-    apt-get update
+apt update
 
-    success "Paketlisten aktualisiert"
+echo
+echo "==> Pakete aktualisieren"
 
-}
-
-install_base_packages() {
-
-    info "Installiere Grundpakete..."
-
-    apt-get install -y \
-        ca-certificates \
-        curl \
-        wget \
-        jq \
-        gnupg \
-        lsb-release \
-        apt-transport-https
-
-    success "Grundpakete installiert"
+apt -y upgrade
 
 }
-

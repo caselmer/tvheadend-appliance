@@ -1,70 +1,44 @@
-#!/bin/sh
-#
-# TVHeadend Appliance
-# Common Functions
-#
+#!/usr/bin/env bash
 
-###############################################################################
-# Farben nur wenn Terminal vorhanden
-###############################################################################
+print_header() {
 
-if [ -t 1 ]; then
-    RED="$(printf '\033[1;31m')"
-    GREEN="$(printf '\033[1;32m')"
-    YELLOW="$(printf '\033[1;33m')"
-    BLUE="$(printf '\033[1;34m')"
-    RESET="$(printf '\033[0m')"
-else
-    RED=""
-    GREEN=""
-    YELLOW=""
-    BLUE=""
-    RESET=""
+cat <<EOF
+
+=========================================
+      TVHeadend Appliance Installer
+               Version 0.2.0
+=========================================
+
+EOF
+
+}
+
+check_root() {
+
+if [[ $EUID -ne 0 ]]; then
+    echo "Bitte als root ausführen."
+    exit 1
 fi
 
-###############################################################################
-# Logging
-###############################################################################
-
-info() {
-    printf "%s[INFO]%s %s\n" "$BLUE" "$RESET" "$1"
 }
 
-success() {
-    printf "%s[ OK ]%s %s\n" "$GREEN" "$RESET" "$1"
-}
+check_os() {
 
-warn() {
-    printf "%s[WARN]%s %s\n" "$YELLOW" "$RESET" "$1"
-}
-
-fatal() {
-    printf "%s[FAIL]%s %s\n" "$RED" "$RESET" "$1" >&2
+if [[ ! -f /etc/os-release ]]; then
+    echo "Betriebssystem nicht erkannt."
     exit 1
-}
+fi
 
-###############################################################################
-# Prüfungen
-###############################################################################
+source /etc/os-release
 
-require_root() {
+if [[ "$ID" != "debian" ]]; then
+    echo "Nur Debian wird unterstützt."
+    exit 1
+fi
 
-    if [ "$(id -u)" -ne 0 ]; then
-        fatal "Dieses Script muss als root ausgeführt werden."
-    fi
-
-}
-
-require_debian12() {
-
-    [ -f /etc/os-release ] || fatal "/etc/os-release fehlt."
-
-    . /etc/os-release
-
-    [ "$ID" = "debian" ] || fatal "Nur Debian wird unterstützt."
-
-    [ "$VERSION_CODENAME" = "bookworm" ] || \
-        fatal "Nur Debian 12 (Bookworm) wird unterstützt."
+if [[ "$VERSION_ID" != "12" ]]; then
+    echo "Nur Debian 12 wird unterstützt."
+    exit 1
+fi
 
 }
-
