@@ -1,16 +1,77 @@
 #!/usr/bin/env bash
 
-update_system() {
+#
+# TVHeadend Appliance
+# Package management
+#
 
-echo
+###############################################################################
+# Update package lists
+###############################################################################
 
-info "Aktualisiere Paketlisten..."
-apt update
-success "Paketlisten aktualisiert."
+update_package_lists() {
 
-echo
+    info "Aktualisiere Paketlisten..."
 
-info "Installiere Updates..."
-apt -y upgrade
-success "System ist aktuell."
+    apt-get update
+
+    success "Paketlisten aktualisiert."
+}
+
+###############################################################################
+# Upgrade installed packages
+###############################################################################
+
+upgrade_system() {
+
+    info "Installiere verfügbare Updates..."
+
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get -y upgrade
+
+    success "System aktualisiert."
+}
+
+###############################################################################
+# Install required packages
+###############################################################################
+
+install_dependencies() {
+
+    info "Installiere benötigte Pakete..."
+
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y \
+        curl \
+        ca-certificates \
+        wget \
+        jq
+
+    success "Abhängigkeiten installiert."
+}
+
+###############################################################################
+# Cleanup
+###############################################################################
+
+cleanup_system() {
+
+    info "Bereinige Paketcache..."
+
+    apt-get autoremove -y
+    apt-get clean
+
+    success "Bereinigung abgeschlossen."
+}
+
+###############################################################################
+# Main
+###############################################################################
+
+install_system() {
+
+    update_package_lists
+    upgrade_system
+    install_dependencies
+
 }
