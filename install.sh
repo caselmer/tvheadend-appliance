@@ -10,7 +10,6 @@ source "$SCRIPT_DIR/scripts/tvheadend.sh"
 source "$SCRIPT_DIR/scripts/iptv.sh"
 source "$SCRIPT_DIR/scripts/epg.sh"
 
-
 main() {
 
     print_header

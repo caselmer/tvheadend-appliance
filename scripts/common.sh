@@ -134,13 +134,21 @@ check_memory() {
 ###############################################################################
 # Installer phases
 ###############################################################################
+
 load_config() {
 
-    source "$SCRIPT_DIR/config/system.conf"
-    source "$SCRIPT_DIR/config/tvheadend.conf"
-    source "$SCRIPT_DIR/config/iptv.conf"
-    source "$SCRIPT_DIR/config/epg.conf"
+    for cfg in \
+        "$SCRIPT_DIR/config/system.conf" \
+        "$SCRIPT_DIR/config/tvheadend.conf" \
+        "$SCRIPT_DIR/config/iptv.conf" \
+        "$SCRIPT_DIR/config/epg.conf"
+    do
+        [[ -f "$cfg" ]] || die "Konfigurationsdatei fehlt: $cfg"
+        # shellcheck disable=SC1090
+        source "$cfg"
+    done
 
+    success "Konfiguration geladen."
 }
 
 preflight() {
