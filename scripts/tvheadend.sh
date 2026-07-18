@@ -18,8 +18,7 @@ install_tvheadend() {
 
     info "Installiere TVHeadend..."
 
-    DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y tvheadend
+    install_package tvheadend
 
     success "TVHeadend wurde installiert."
 }

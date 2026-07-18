@@ -36,20 +36,37 @@ upgrade_system() {
 # Install required packages
 ###############################################################################
 
+install_package() {
+
+    local package="$1"
+
+    if dpkg -s "$package" >/dev/null 2>&1; then
+        success "Paket ${package} ist bereits installiert."
+        return
+    fi
+
+    info "Installiere Paket: ${package}..."
+
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y "$package"
+
+    success "Paket ${package} installiert."
+
+}
+
+
 install_dependencies() {
 
     info "Installiere benötigte Pakete..."
 
-    DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y \
-        curl \
-        ca-certificates \
-        wget \
-        jq
+    install_package curl
+    install_package ca-certificates
+    install_package wget
+    install_package jq
 
     success "Abhängigkeiten installiert."
-}
 
+}
 ###############################################################################
 # Cleanup
 ###############################################################################
