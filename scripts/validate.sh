@@ -23,7 +23,13 @@ bash -n install.sh
 bash -n scripts/*.sh
 
 echo "[2/4] Prüfe mit ShellCheck..."
-shellcheck install.sh scripts/*.sh
+
+if command -v shellcheck >/dev/null 2>&1; then
+    shellcheck install.sh scripts/*.sh
+else
+    echo "ShellCheck nur auf Entwicklungsrechner erforderlich – Prüfung übersprungen."
+fi
+
 
 echo "[3/4] Git-Status..."
 git status --short
