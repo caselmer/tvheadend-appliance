@@ -1,50 +1,74 @@
 #!/usr/bin/env bash
 
-#
-# TVHeadend Appliance
-# TVHeadend installation
-#
-
 ###############################################################################
 # Install TVHeadend
 ###############################################################################
 
 install_tvheadend() {
 
-    if dpkg -s tvheadend >/dev/null 2>&1; then
-        success "TVHeadend ist bereits installiert."
-        return
-    fi
-
     info "Installiere TVHeadend..."
 
     install_package tvheadend
 
     success "TVHeadend wurde installiert."
+
 }
 
 ###############################################################################
-# Enable service
+# Enable TVHeadend service
 ###############################################################################
 
 enable_tvheadend() {
 
-    info "Starte TVHeadend..."
+    info "Aktiviere TVHeadend-Dienst..."
 
-    systemctl enable tvheadend
-    systemctl restart tvheadend
+    systemctl enable tvheadend \
+        || die "TVHeadend-Dienst konnte nicht aktiviert werden."
 
-    success "TVHeadend läuft."
+    success "TVHeadend-Dienst aktiviert."
 
 }
 
 ###############################################################################
-# Installation phase
+# Start TVHeadend service
+###############################################################################
+
+start_tvheadend() {
+
+    info "Starte TVHeadend-Dienst..."
+
+    systemctl start tvheadend \
+        || die "TVHeadend-Dienst konnte nicht gestartet werden."
+
+    success "TVHeadend-Dienst gestartet."
+
+}
+
+###############################################################################
+# Verify TVHeadend service
+###############################################################################
+
+verify_tvheadend() {
+
+    info "Prüfe TVHeadend-Dienst..."
+
+    if systemctl is-active --quiet tvheadend; then
+        success "TVHeadend läuft."
+    else
+        die "TVHeadend konnte nicht gestartet werden."
+    fi
+
+}
+
+###############################################################################
+# TVHeadend installation
 ###############################################################################
 
 install_tvheadend_stack() {
 
     install_tvheadend
     enable_tvheadend
+    start_tvheadend
+    verify_tvheadend
 
 }
