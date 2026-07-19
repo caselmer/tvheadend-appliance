@@ -31,4 +31,4 @@ git status --short
 echo "[4/4] Validierung abgeschlossen."
 
 echo
-echo "✓ Keine Syntaxfehler gefunden."
+success "Projektvalidierung erfolgreich."
