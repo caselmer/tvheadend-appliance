@@ -30,11 +30,10 @@ else
     echo "ShellCheck nur auf Entwicklungsrechner erforderlich – Prüfung übersprungen."
 fi
 
-
 echo "[3/4] Git-Status..."
 git status --short
 
 echo "[4/4] Validierung abgeschlossen."
 
 echo
-success "Projektvalidierung erfolgreich."
+echo "✓ Projektvalidierung erfolgreich."
