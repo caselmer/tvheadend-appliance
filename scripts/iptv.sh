@@ -7,6 +7,12 @@
 
 configure_iptv() {
 
-    info "IPTV-Konfiguration folgt in einem späteren Meilenstein."
+    tvh_api_wait
+
+    create_iptv_network
+
+    configure_m3u
+
+    trigger_scan
 
 }
