@@ -21,9 +21,8 @@
 
 _tvh_api_url() {
 
-    printf 'http://%s:%s/api' \
-        "$TVH_HOST" \
-        "$TVH_PORT"
+    printf 'http://127.0.0.1:%s/api' \
+        "$TVH_HTTP_PORT"
 
 }
 
@@ -37,13 +36,6 @@ _tvh_curl() {
         --connect-timeout 5
         --max-time 30
     )
-
-    if [[ -n "${TVH_USERNAME:-}" ]]; then
-        curl_args+=(
-            --user
-            "${TVH_USERNAME}:${TVH_PASSWORD}"
-        )
-    fi
 
     curl_args+=("$@")
 
@@ -75,7 +67,6 @@ tvh_api_wait() {
     return 1
 
 }
-
 
 ###############################################################################
 # HTTP GET
