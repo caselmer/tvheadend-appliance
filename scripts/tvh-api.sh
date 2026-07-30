@@ -21,10 +21,36 @@
 
 _tvh_api_url() {
 
-    printf 'http://127.0.0.1:%s/api' \
+    printf 'http://%s:%s/api' \
+        "$TVH_HOST" \
         "$TVH_HTTP_PORT"
 
 }
+
+###############################################################################
+# HTTP status helper
+#
+# Liefert ausschließlich den HTTP-Statuscode zurück.
+###############################################################################
+
+_tvh_http_status() {
+
+    local url="${1:?Missing URL}"
+
+    curl \
+        --silent \
+        --output /dev/null \
+        --write-out '%{http_code}' \
+        --connect-timeout 5 \
+        --max-time 30 \
+        "$url" \
+        || printf '000'
+
+}
+
+###############################################################################
+# Zentraler curl-Wrapper
+###############################################################################
 
 _tvh_curl() {
 
@@ -37,9 +63,14 @@ _tvh_curl() {
         --max-time 30
     )
 
-    curl_args+=("$@")
+    if [[ -n "${TVH_USERNAME:-}" ]] && [[ -n "${TVH_PASSWORD:-}" ]]; then
+        curl_args+=(
+               --user
+               "${TVH_USERNAME}:${TVH_PASSWORD}"
+           )
+    fi
 
-    curl "${curl_args[@]}"
+    curl "${curl_args[@]}" "$@"
 
 }
 
@@ -49,24 +80,37 @@ _tvh_curl() {
 
 tvh_api_wait() {
 
-    local api_url
+    info "Warte auf TVHeadend..."
+
     local timeout=60
+    local api_url
+    local http_code
 
     api_url="$(_tvh_api_url)/serverinfo"
 
     while (( timeout > 0 ))
     do
-        if _tvh_curl "$api_url" >/dev/null; then
-            return 0
-        fi
+
+        http_code="$(_tvh_http_status "$api_url")"
+
+        case "$http_code" in
+
+            200|401)
+                success "TVHeadend ist erreichbar."
+                return 0
+                ;;
+
+        esac
 
         sleep 1
         ((timeout--))
+
     done
 
-    return 1
+    die "TVHeadend konnte nicht erreicht werden."
 
 }
+
 
 ###############################################################################
 # HTTP GET
