@@ -5,6 +5,13 @@
 # IPTV configuration
 #
 
+###############################################################################
+# TVHeadend API endpoints
+###############################################################################
+
+readonly TVH_API_NETWORK_GRID="mpegts/network/grid"
+readonly TVH_API_NETWORK_CREATE="mpegts/network/create"
+
 configure_iptv() {
 
     tvh_api_wait
@@ -23,14 +30,18 @@ configure_iptv() {
 
 create_iptv_network() {
 
-    info "IPTV-Netzwerk wird vorbereitet..."
+    info "Prüfe IPTV-Netzwerk ..."
 
-    # TODO:
-    # IPTV-Netzwerk über TVHeadend API anlegen.
+    local json
 
-    success "IPTV-Netzwerk vorbereitet."
+    json="$(
+        tvh_api_get "$TVH_API_NETWORK_GRID"
+    )"
+
+    printf '%s\n' "$json"
 
 }
+
 
 ###############################################################################
 # M3U
