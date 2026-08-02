@@ -68,7 +68,7 @@ create_iptv_network() {
             }'
     )" || die "IPTV-Konfiguration konnte nicht erstellt werden."
 
-    data="class=iptv_network&conf=$(printf '%s' "$conf" | jq -sRr @uri)"
+    data="class=iptv_auto_network&conf=$(printf '%s' "$conf" | jq -sRr @uri)"
 
     response="$(
         tvh_api_post "$TVH_API_NETWORK_CREATE" "$data"
