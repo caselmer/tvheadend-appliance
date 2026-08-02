@@ -33,12 +33,54 @@ create_iptv_network() {
     info "Prüfe IPTV-Netzwerk ..."
 
     local json
+    local response
+    local uuid
+    local conf
+    local data
 
     json="$(
-        tvh_api_get "$TVH_API_NETWORK_GRID"
-    )"
+        tvh_api_get "$TVH_API_NETWORK_GRID?limit=50"
+    )" || die "IPTV-Netzwerk konnte nicht abgefragt werden."
 
-    printf '%s\n' "$json"
+    if jq -e \
+        --arg name "$IPTV_NAME" \
+        '.entries[]? | select(.networkname == $name)' \
+        >/dev/null <<< "$json"; then
+
+        success "IPTV-Netzwerk bereits vorhanden."
+
+        return 0
+    fi
+
+    info "Lege IPTV-Netzwerk an..."
+
+    conf="$(
+        jq -cn \
+            --arg name "$IPTV_NAME" \
+            --arg url "$IPTV_URL" \
+            --argjson priority "$IPTV_PRIORITY" \
+            '{
+                enabled: true,
+                networkname: $name,
+                url: $url,
+                priority: $priority,
+                scan_create: true
+            }'
+    )" || die "IPTV-Konfiguration konnte nicht erstellt werden."
+
+    data="class=iptv_network&conf=$(printf '%s' "$conf" | jq -sRr @uri)"
+
+    response="$(
+        tvh_api_post "$TVH_API_NETWORK_CREATE" "$data"
+    )" || die "IPTV-Netzwerk konnte nicht angelegt werden."
+
+    uuid="$(jq -r '.uuid // empty' <<< "$response")"
+
+    if [[ -z "$uuid" ]]; then
+        die "TVHeadend hat keine UUID für das IPTV-Netzwerk zurückgegeben."
+    fi
+
+    success "IPTV-Netzwerk angelegt."
 
 }
 
