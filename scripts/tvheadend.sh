@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 
 ###############################################################################
+# Configure TVHeadend debconf
+###############################################################################
+configure_tvheadend_debconf() {
+	info "Konfiguriere TVHeadend-Zugang..."
+	debconf-set-selections <<EOF
+	tvheadend tvheadend/admin_username string ${TVH_USERNAME}
+	tvheadend tvheadend/admin_password password ${TVH_PASSWORD}
+EOF
+
+	success "TVHeadend-Zugang konfiguriert."
+}
+
+###############################################################################
 # Install TVHeadend
 ###############################################################################
 
@@ -8,6 +21,7 @@ install_tvheadend() {
 
     info "Installiere TVHeadend..."
 
+    configure_tvheadend_debconf
     install_package tvheadend
 
     success "TVHeadend wurde installiert."
