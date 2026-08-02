@@ -42,15 +42,21 @@ create_iptv_network() {
         tvh_api_get "$TVH_API_NETWORK_GRID?limit=50"
     )" || die "IPTV-Netzwerk konnte nicht abgefragt werden."
 
+
     if jq -e \
         --arg name "$IPTV_NAME" \
-        '.entries[]? | select(.networkname == $name)' \
+        '.entries[]? |
+         select(
+             .class == "iptv_auto_network" and
+             .networkname == $name
+        )' \
         >/dev/null <<< "$json"; then
 
         success "IPTV-Netzwerk bereits vorhanden."
 
         return 0
     fi
+
 
     info "Lege IPTV-Netzwerk an..."
 
