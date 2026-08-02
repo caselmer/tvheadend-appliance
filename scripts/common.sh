@@ -7,11 +7,16 @@
 
 set -Eeuo pipefail
 
-LOGFILE="/var/log/tvheadend-appliance.log"
 
 ###############################################################################
 # Logging
 ###############################################################################
+
+if [[ "$(uname -s)" == "Linux" ]]; then
+    LOGFILE="/var/log/tvheadend-appliance.log"
+else
+    LOGFILE="$SCRIPT_DIR/tvheadend-appliance.log"
+fi
 
 log() {
     echo "[$(date '+%F %T')] $*" | tee -a "$LOGFILE"
