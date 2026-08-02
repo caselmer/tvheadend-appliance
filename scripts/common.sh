@@ -148,8 +148,15 @@ load_config() {
         source "$cfg"
     done
 
+    # Optional: TVHeadend API credentials
+    if [[ -f "$SCRIPT_DIR/config/tvheadend.credentials" ]]; then
+        # shellcheck disable=SC1090
+        source "$SCRIPT_DIR/config/tvheadend.credentials"
+    fi
+
     success "Konfiguration geladen."
 }
+
 
 preflight() {
 
