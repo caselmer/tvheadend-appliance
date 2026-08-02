@@ -60,6 +60,7 @@ _tvh_curl() {
         --fail
         --location
         --connect-timeout 5
+        --digest
         --max-time 30
     )
 
